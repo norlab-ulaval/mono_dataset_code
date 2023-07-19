@@ -38,7 +38,7 @@ RUN cd libzip-1.1.1/ \
 	&& make \
 	&& make install \
 	&& cp lib/zipconf.h /usr/local/include/zipconf.h
-RUN cd ${DIR}/aruco-1.3.0/ \
+RUN cd ${DIR}/aruco-3.1.0/ \
 	&& mkdir build \
 	&& cd build \
 	&& cmake .. \

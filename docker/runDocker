@@ -13,7 +13,6 @@ XSOCK=/tmp/.X11-unix
 prompt(){ read -p "$1 (y/n) " a; return $(test $a = "y"); }
 	
 docker run -it --rm \
-	--gpus all \
 	--name $image_name \
 	--device /dev/snd \
 	-e DISPLAY=$DISPLAY \

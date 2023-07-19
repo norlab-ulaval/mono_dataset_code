@@ -31,7 +31,8 @@ target_link_libraries(responseCalib ${OpenCV_LIBS} ${LIBZIP_LIBRARY})
 add_executable(playDataset src/main_playbackDataset.cpp src/FOVUndistorter.cpp src/PhotometricUndistorter.cpp)
 target_link_libraries(playDataset ${OpenCV_LIBS} ${LIBZIP_LIBRARY})
 
-
+add_executable(testAruco src/test_aruco.cpp src/FOVUndistorter.cpp src/PhotometricUndistorter.cpp)
+target_link_libraries(testAruco ${OpenCV_LIBS} ${LIBZIP_LIBRARY})
 
 
 

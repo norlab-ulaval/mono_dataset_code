@@ -37,6 +37,8 @@
 #include <aruco/cvdrawingutils.h>
 #include <opencv2/highgui/highgui.hpp>
 
+#include <opencv2/aruco.hpp>
+
 #include "BenchmarkDatasetReader.h"
 #include "Eigen/Core"
 #include "Eigen/LU"
@@ -209,7 +211,8 @@ int main( int argc, char** argv )
 	w_out = reader->getUndistorter()->getOutputDims()[0];
 	h_out = reader->getUndistorter()->getOutputDims()[1];
 
-	aruco::MarkerDetector MDetector;
+	//aruco::MarkerDetector MDetector;
+	//MDetector.setDictionary("ARUCO_MIP_25h7");
 
 	std::vector<float*> images;
 	std::vector<float*> p2imgX;
@@ -226,6 +229,9 @@ int main( int argc, char** argv )
 
 	if(meanExposure==0) meanExposure = 1;
 
+	cv::aruco::DetectorParameters detectorParams = cv::aruco::DetectorParameters();
+	cv::Ptr<cv::aruco::Dictionary> dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_6X6_250);
+	
 
 	for(int i=0;i<reader->getNumImages();i+=imageSkip)
 	{
@@ -236,15 +242,19 @@ int main( int argc, char** argv )
 		cv::Mat(h_out, w_out, CV_32F, img->image).convertTo(InImage, CV_8U, 1, 0);
 		delete img;
 
-		MDetector.detect(InImage,Markers);
-		if(Markers.size() != 1) continue;
+		std::vector<int> ids;
+ 		std::vector<std::vector<cv::Point2f> > corners;
+ 		cv::aruco::detectMarkers(InImage, dictionary, corners, ids);
+		
+		// Markers = MDetector.detect(InImage);
+		if(corners.size() != 1) continue;
 
         std::vector<cv::Point2f> ptsP;
         std::vector<cv::Point2f> ptsI;
-		ptsI.push_back(cv::Point2f(Markers[0][0].x, Markers[0][0].y));
-		ptsI.push_back(cv::Point2f(Markers[0][1].x, Markers[0][1].y));
-		ptsI.push_back(cv::Point2f(Markers[0][2].x, Markers[0][2].y));
-		ptsI.push_back(cv::Point2f(Markers[0][3].x, Markers[0][3].y));
+		ptsI.push_back(cv::Point2f(corners[0][0].x, corners[0][0].y));
+		ptsI.push_back(cv::Point2f(corners[0][1].x, corners[0][1].y));
+		ptsI.push_back(cv::Point2f(corners[0][2].x, corners[0][2].y));
+		ptsI.push_back(cv::Point2f(corners[0][3].x, corners[0][3].y));
 		ptsP.push_back(cv::Point2f(-0.5,0.5));
 		ptsP.push_back(cv::Point2f(0.5,0.5));
 		ptsP.push_back(cv::Point2f(0.5,-0.5));
